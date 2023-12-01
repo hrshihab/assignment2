@@ -1,4 +1,5 @@
-import { TUserOrder } from './userOrder.interface'
+import mongoose from 'mongoose'
+import { TOrder, TUserOrder } from './userOrder.interface'
 import { UserOrder } from './userOrder.model'
 
 const createUserIntoDB = async (userData: TUserOrder) => {
@@ -56,10 +57,54 @@ const deleteUserDB = async (userId: number) => {
   return result
 }
 
+const addProductToOrderDB = async (
+  userId: number,
+  orderData: TOrder,
+): Promise<TUserOrder | null> => {
+  try {
+    console.log('here')
+    const user = await UserOrder.findOneAndUpdate(
+      { userId },
+      {
+        $push: {
+          orders: orderData,
+        },
+      },
+      { new: true }, // Return the updated document
+    )
+    if (!user) {
+      throw new Error('User not found!')
+    }
+
+    return user.toObject()
+  } catch (error: any) {
+    console.error('Error adding product to order:', error)
+    throw error // Re-throw the original error
+  }
+}
+
+const getAllOrdersDB = async (userId: number) => {
+  const result = await UserOrder.aggregate([
+    {
+      $match: { userId: userId },
+    },
+    {
+      $project: {
+        orders: 1,
+        _id: 0,
+      },
+    },
+  ])
+
+  return result
+}
+
 export const UserOrderServices = {
   createUserIntoDB,
   getAllUserDB,
   getSingleUserDB,
   updateUserDB,
   deleteUserDB,
+  addProductToOrderDB,
+  getAllOrdersDB,
 }

@@ -133,10 +133,59 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
+const addProductToOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params
+    const orderData = req.body
+    //console.log(userId, orderData)
+    const result = await UserOrderServices.addProductToOrderDB(
+      parseInt(userId),
+      orderData,
+    )
+    res.status(201).json({
+      success: true,
+      message: 'Order created successfully!',
+      data: null,
+    })
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: error.message || 'User not found!',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
+    })
+  }
+}
+
+const getAllOrders = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params
+    const result = await UserOrderServices.getAllOrdersDB(parseInt(userId))
+    res.status(201).json({
+      success: true,
+      message: 'Order fetched successfully!',
+      data: result,
+    })
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: error.message || 'User not found!',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
+    })
+  }
+}
+
 export const userControllers = {
   createUser,
   getAllUsers,
   getSingleUser,
   updateUser,
   deleteUser,
+  addProductToOrder,
+  getAllOrders,
 }
