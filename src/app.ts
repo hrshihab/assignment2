@@ -8,8 +8,8 @@ app.use(express.json())
 
 app.use('/api/users', userRoutes)
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
+app.get('/', (req, res) => {
+  res.send('Hello Assignment 2!')
+})
 
 export default app

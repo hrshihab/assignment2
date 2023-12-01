@@ -114,10 +114,13 @@ const calculateTotalPriceDB = async (userId: number) => {
   }
 
   // Calculate total price by summing the prices of all orders
-  const totalPrice = result.orders.reduce(
-    (acc, order) => acc + order.price * order.quantity,
-    0,
-  )
+  // Check if orders array exists before attempting to reduce
+  const totalPrice = result.orders
+    ? result.orders.reduce(
+        (acc, order) => acc + order.price * order.quantity,
+        0,
+      )
+    : 0
   return totalPrice
 }
 

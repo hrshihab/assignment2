@@ -2,17 +2,20 @@ import { Request, Response } from 'express'
 import userOrderSchemaZod from './userOrder.validation'
 import { UserOrderServices } from './userOrder.service'
 
+// Create a new user
 const createUser = async (req: Request, res: Response) => {
   try {
     const { user: userData } = req.body
     const zodParseData = userOrderSchemaZod.parse(userData)
     const result = await UserOrderServices.createUserIntoDB(zodParseData)
-    // Exclude password field and filter out empty orders
+
+    // Exclude sensitive fields (password) and filter out empty orders
     const sanitizedResult = {
       ...result.toObject(),
       password: undefined,
       orders: undefined,
     }
+
     res.status(200).json({
       success: true,
       message: 'User created Successfully',
@@ -27,6 +30,7 @@ const createUser = async (req: Request, res: Response) => {
   }
 }
 
+// Get all users with selected fields
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const result = await UserOrderServices.getAllUserDB({
@@ -49,10 +53,14 @@ const getAllUsers = async (req: Request, res: Response) => {
     })
   }
 }
+
+// Get a single user by userId
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
     const result = await UserOrderServices.getSingleUserDB(parseInt(userId))
+
+    // Check if the user is not found
     if (result === null || result === undefined || result.length === 0) {
       return res.status(404).json({
         success: false,
@@ -63,6 +71,7 @@ const getSingleUser = async (req: Request, res: Response) => {
         },
       })
     }
+
     res.status(200).json({
       success: true,
       message: 'User fetched successfully!',
@@ -77,6 +86,7 @@ const getSingleUser = async (req: Request, res: Response) => {
   }
 }
 
+// Update a user by userId
 const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
@@ -102,10 +112,13 @@ const updateUser = async (req: Request, res: Response) => {
   }
 }
 
+// Delete a user by userId
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
     const result = await UserOrderServices.deleteUserDB(parseInt(userId))
+
+    // Check if the user is not found
     if ((await result.deletedCount) < 1) {
       return res.status(404).json({
         success: false,
@@ -116,6 +129,7 @@ const deleteUser = async (req: Request, res: Response) => {
         },
       })
     }
+
     res.status(200).json({
       success: true,
       message: 'User deleted successfully!',
@@ -133,11 +147,11 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
+// Add a product to the orders array for a specific user
 const addProductToOrder = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
     const orderData = req.body
-    //console.log(userId, orderData)
     const result = await UserOrderServices.addProductToOrderDB(
       parseInt(userId),
       orderData,
@@ -159,6 +173,7 @@ const addProductToOrder = async (req: Request, res: Response) => {
   }
 }
 
+// Get all orders for a specific user
 const getAllOrders = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
@@ -180,6 +195,7 @@ const getAllOrders = async (req: Request, res: Response) => {
   }
 }
 
+// Calculate total price for all orders of a specific user
 const calculateTotalPrice = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
@@ -196,6 +212,7 @@ const calculateTotalPrice = async (req: Request, res: Response) => {
         totalPrice,
       },
     })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(404).json({
       success: false,
