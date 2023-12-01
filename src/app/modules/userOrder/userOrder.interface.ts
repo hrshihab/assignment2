@@ -31,5 +31,5 @@ export type TUserOrder = {
 }
 
 export interface UserOrderModel extends Model<TUserOrder> {
-  isUserExists(id: string): Promise<TUserOrder | null>
+  isUserExists(userId: number): Promise<TUserOrder | null>
 }

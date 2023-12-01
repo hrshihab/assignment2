@@ -7,48 +7,57 @@ import {
   UserOrderModel,
 } from './userOrder.interface'
 
-const fullNameSchema = new Schema<TFullName>({
-  firstName: {
-    type: String,
-    trim: true,
-    required: [true, 'First name must be required'],
+const fullNameSchema = new Schema<TFullName>(
+  {
+    firstName: {
+      type: String,
+      trim: true,
+      required: [true, 'First name must be required'],
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      required: [true, 'Last name also required'],
+    },
   },
-  lastName: {
-    type: String,
-    trim: true,
-    required: [true, 'Last name also required'],
-  },
-})
+  { _id: false },
+)
 
-const addressSchema = new Schema<TAddress>({
-  street: {
-    type: String,
-    required: [true, 'Street must be required'],
+const addressSchema = new Schema<TAddress>(
+  {
+    street: {
+      type: String,
+      required: [true, 'Street must be required'],
+    },
+    city: {
+      type: String,
+      required: [true, 'City must be required'],
+    },
+    country: {
+      type: String,
+      required: [true, 'Country must be required'],
+    },
   },
-  city: {
-    type: String,
-    required: [true, 'City must be required'],
-  },
-  country: {
-    type: String,
-    required: [true, 'Country must be required'],
-  },
-})
+  { _id: false },
+)
 
-const orderSchema = new Schema<TOrder>({
-  productName: {
-    type: String,
-    required: [true, 'Product Name required'],
+const orderSchema = new Schema<TOrder>(
+  {
+    productName: {
+      type: String,
+      required: [true, 'Product Name required'],
+    },
+    price: {
+      type: Number,
+      required: [true, 'Price must be mentioned'],
+    },
+    quantity: {
+      type: Number,
+      required: [true, 'Quantity must required'],
+    },
   },
-  price: {
-    type: Number,
-    required: [true, 'Price must be mentioned'],
-  },
-  quantity: {
-    type: Number,
-    required: [true, 'Quantity must required'],
-  },
-})
+  { _id: false },
+)
 
 const userOrderSchema = new Schema<TUserOrder, UserOrderModel>({
   userId: {
@@ -91,6 +100,12 @@ const userOrderSchema = new Schema<TUserOrder, UserOrderModel>({
   },
   orders: [orderSchema],
 })
+// Declare the static method
+userOrderSchema.statics.isUserExists = async function (
+  userId: number,
+): Promise<TUserOrder | null> {
+  return this.findOne({ userId }).exec()
+}
 
 export const UserOrder = model<TUserOrder, UserOrderModel>(
   'UserOrder',
