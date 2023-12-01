@@ -6,6 +6,8 @@ import {
   TUserOrder,
   UserOrderModel,
 } from './userOrder.interface'
+import bcrypt from 'bcrypt'
+import config from '../../config'
 
 const fullNameSchema = new Schema<TFullName>(
   {
@@ -100,6 +102,15 @@ const userOrderSchema = new Schema<TUserOrder, UserOrderModel>({
   },
   orders: [orderSchema],
 })
+userOrderSchema.pre('save', async function (next) {
+  const user = this
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  )
+  next()
+})
+
 // Declare the static method
 userOrderSchema.statics.isUserExists = async function (
   userId: number,

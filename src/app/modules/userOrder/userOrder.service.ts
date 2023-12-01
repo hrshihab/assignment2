@@ -61,7 +61,6 @@ const addProductToOrderDB = async (
   orderData: TOrder,
 ): Promise<TUserOrder | null> => {
   try {
-    console.log('here')
     const user = await UserOrder.findOneAndUpdate(
       { userId },
       {
