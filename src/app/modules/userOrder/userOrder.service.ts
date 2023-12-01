@@ -35,8 +35,31 @@ const getSingleUserDB = async (userId: number) => {
   return result
 }
 
+const updateUserDB = async (
+  userId: number,
+  updateData: TUserOrder,
+): Promise<TUserOrder | null> => {
+  const result = await UserOrder.findOneAndUpdate({ userId }, updateData, {
+    new: true,
+    projection: {
+      password: 0,
+    },
+  })
+  if (!result) {
+    throw new Error('User not found!')
+  }
+  return result
+}
+
+const deleteUserDB = async (userId: number) => {
+  const result = await UserOrder.deleteOne({ userId: userId })
+  return result
+}
+
 export const UserOrderServices = {
   createUserIntoDB,
   getAllUserDB,
   getSingleUserDB,
+  updateUserDB,
+  deleteUserDB,
 }
