@@ -1,6 +1,7 @@
 import { TOrder, TUserOrder } from './userOrder.interface'
 import { UserOrder } from './userOrder.model'
 
+// Create a new user in the database
 const createUserIntoDB = async (userData: TUserOrder) => {
   if (await UserOrder.isUserExists(userData.userId)) {
     throw new Error('User already exists!')
@@ -10,13 +11,15 @@ const createUserIntoDB = async (userData: TUserOrder) => {
   return result
 }
 
+// Retrieve all users from the database with optional projection
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getAllUserDB = async (projection: Record<string, any>) => {
   const result = await UserOrder.find({}, projection).lean().exec()
   return result
 }
 
+// Retrieve a single user from the database based on userId
 const getSingleUserDB = async (userId: number) => {
-  //const result = await UserOrder.findOne({ userId })
   const result = await UserOrder.aggregate([
     { $match: { userId: Number(userId) } },
     {
@@ -35,6 +38,7 @@ const getSingleUserDB = async (userId: number) => {
   return result
 }
 
+// Update a user in the database based on userId
 const updateUserDB = async (
   userId: number,
   updateData: TUserOrder,
@@ -51,11 +55,13 @@ const updateUserDB = async (
   return result
 }
 
+// Delete a user from the database based on userId
 const deleteUserDB = async (userId: number) => {
   const result = await UserOrder.deleteOne({ userId: userId })
   return result
 }
 
+// Add a product to the orders array for a specific user
 const addProductToOrderDB = async (
   userId: number,
   orderData: TOrder,
@@ -75,12 +81,14 @@ const addProductToOrderDB = async (
     }
 
     return user.toObject()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Error adding product to order:', error)
     throw error // Re-throw the original error
   }
 }
 
+// Retrieve all orders for a specific user
 const getAllOrdersDB = async (userId: number) => {
   const result = await UserOrder.aggregate([
     {
@@ -97,6 +105,7 @@ const getAllOrdersDB = async (userId: number) => {
   return result
 }
 
+// Calculate the total price of all orders for a specific user
 const calculateTotalPriceDB = async (userId: number) => {
   const result = await UserOrder.findOne({ userId })
 
