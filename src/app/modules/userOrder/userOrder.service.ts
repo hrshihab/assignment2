@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import { TOrder, TUserOrder } from './userOrder.interface'
 import { UserOrder } from './userOrder.model'
 
@@ -99,6 +98,21 @@ const getAllOrdersDB = async (userId: number) => {
   return result
 }
 
+const calculateTotalPriceDB = async (userId: number) => {
+  const result = await UserOrder.findOne({ userId })
+
+  if (!result) {
+    throw new Error('User not found!')
+  }
+
+  // Calculate total price by summing the prices of all orders
+  const totalPrice = result.orders.reduce(
+    (acc, order) => acc + order.price * order.quantity,
+    0,
+  )
+  return totalPrice
+}
+
 export const UserOrderServices = {
   createUserIntoDB,
   getAllUserDB,
@@ -107,4 +121,5 @@ export const UserOrderServices = {
   deleteUserDB,
   addProductToOrderDB,
   getAllOrdersDB,
+  calculateTotalPriceDB,
 }
