@@ -48,9 +48,9 @@ Make sure you have the following installed:
   - Define environment variables in the .env file (e.g., PORT, MONGODB_URI, etc.).
 
 ## Running the Application
-1.Start the development server:
+1. Start the development server:
   - `npm run start:dev`
-2.Open your web browser and go to http://localhost:5000 (or the specified port).
+2. Open your web browser and go to http://localhost:5000 (or the specified port).
 
 ## Available Scripts
 
