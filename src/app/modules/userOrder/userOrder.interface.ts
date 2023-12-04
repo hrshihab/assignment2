@@ -31,5 +31,6 @@ export type TUserOrder = {
 }
 
 export interface UserOrderModel extends Model<TUserOrder> {
+  // eslint-disable-next-line no-unused-vars
   isUserExists(userId: number): Promise<TUserOrder | null>
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import userOrderSchemaZod from './userOrder.validation'
 import { UserOrderServices } from './userOrder.service'
@@ -5,7 +6,7 @@ import { UserOrderServices } from './userOrder.service'
 // Create a new user
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user: userData } = req.body
+    const userData = req.body
     const zodParseData = userOrderSchemaZod.parse(userData)
     const result = await UserOrderServices.createUserIntoDB(zodParseData)
 
@@ -14,6 +15,8 @@ const createUser = async (req: Request, res: Response) => {
       ...result.toObject(),
       password: undefined,
       orders: undefined,
+      _id: undefined,
+      __v: undefined,
     }
 
     res.status(200).json({
@@ -39,6 +42,7 @@ const getAllUsers = async (req: Request, res: Response) => {
       age: 1,
       email: 1,
       address: 1,
+      _id: 0,
     })
     res.status(200).json({
       success: true,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Schema, model } from 'mongoose'
 import {
   TAddress,
@@ -102,12 +103,31 @@ const userOrderSchema = new Schema<TUserOrder, UserOrderModel>({
   },
   orders: [orderSchema],
 })
+// Use pre('save') for save operations
 userOrderSchema.pre('save', async function (next) {
-  const user = this
+  const user = this as TUserOrder
+
+  // Always hash the password when saving or updating the document
   user.password = await bcrypt.hash(
     user.password,
     Number(config.bcrypt_salt_rounds),
   )
+
+  next()
+})
+
+// Use pre('findOneAndUpdate') for update operations
+userOrderSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this as any // Using 'any' here because pre middleware typings don't include 'update' directly
+
+  // Check if the password field is present in the update
+  if (update._update && update._update.password) {
+    update._update.password = await bcrypt.hash(
+      update._update.password,
+      Number(config.bcrypt_salt_rounds),
+    )
+  }
+
   next()
 })
 
