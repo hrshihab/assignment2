@@ -94,7 +94,7 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
-    const updateData = req.body.user
+    const updateData = req.body
     const result = await UserOrderServices.updateUserDB(
       parseInt(userId, 10),
       updateData,
@@ -156,10 +156,7 @@ const addProductToOrder = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
     const orderData = req.body
-    const result = await UserOrderServices.addProductToOrderDB(
-      parseInt(userId),
-      orderData,
-    )
+    await UserOrderServices.addProductToOrderDB(parseInt(userId), orderData)
     res.status(201).json({
       success: true,
       message: 'Order created successfully!',

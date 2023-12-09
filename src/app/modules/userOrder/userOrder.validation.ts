@@ -37,7 +37,7 @@ export const userOrderSchemaZod = z.object({
   age: z.number().positive(),
   email: z.string().email(),
   isActive: z.boolean(),
-  hobbies: z.tuple([z.string().min(1).max(255), z.string().min(1).max(255)]),
+  hobbies: z.array(z.string().min(1).max(255)),
   address: addressSchema,
   orders: z.array(orderSchema).optional(),
 })

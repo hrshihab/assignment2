@@ -94,7 +94,7 @@ const userOrderSchema = new Schema<TUserOrder, UserOrderModel>({
     default: true,
   },
   hobbies: {
-    type: [String, String],
+    type: [String],
     required: [true, 'Hobbies must be required'],
   },
   address: {

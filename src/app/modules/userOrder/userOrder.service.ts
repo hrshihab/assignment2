@@ -47,6 +47,9 @@ const updateUserDB = async (
     new: true,
     projection: {
       password: 0,
+      orders: 0,
+      __v: 0,
+      _id: 0,
     },
   })
   if (!result) {
